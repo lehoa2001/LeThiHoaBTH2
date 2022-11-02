@@ -1,4 +1,4 @@
-namespace Hoa2109.Models
+namespace LeThiHoaBTH2.Models
 {
     public class Student
     {
