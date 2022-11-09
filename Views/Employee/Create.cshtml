@@ -1,28 +1,49 @@
 @model LeThiHoaBTH2.Models.Employee
 
+@{
+    ViewData["Title"] = "Create";
+}
 
+<h1>Create</h1>
 
-<h1>Tạo mới một nhân viên</h1>
-<hr>
+<h4>Employee</h4>
+<hr />
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="EmployeeID" class="control-label"></label>
-                <input asp-for="EmployeeID" class="form-control">
-                <span asp-validation-for="EmployeeID" class="text-danger"></span>
+                <label asp-for="MaNV" class="control-label"></label>
+                <input asp-for="MaNV" class="form-control" />
+                <span asp-validation-for="MaNV" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="EmployeeName" class="control-label"></label>
-                <input asp-for="EmployeeName" class="form-control">
-                <span asp-validation-for="EmployeeName" class="text-danger"></span>
+                <label asp-for="MaPhongBan" class="control-label"></label>
+                <input asp-for="MaPhongBan" class="form-control" />
+                <span asp-validation-for="MaPhongBan" class="text-danger"></span>
             </div>
-            <br>
             <div class="form-group">
-                <input class="btn btn-primary" type="submit" value="Save">
-                <a class="btn btn-success" asp-action="Index">Danh sach nhân viên</a>
+                <label asp-for="TenNv" class="control-label"></label>
+                <input asp-for="TenNv" class="form-control" />
+                <span asp-validation-for="TenNv" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="diachi" class="control-label"></label>
+                <input asp-for="diachi" class="form-control" />
+                <span asp-validation-for="diachi" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

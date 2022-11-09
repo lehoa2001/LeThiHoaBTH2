@@ -30,7 +30,7 @@ namespace LeThiHoa.Controllers
 
         //Action xử lý dữ liệu sinh viên gửi lên từ view và lưu vào database
         [HttpPost]
-        public async Task<IActionResult> Create(Customer std)
+        public async Task<IActionResult> Create(CustomerController std)
         {
             if(ModelState.IsValid)
             {
@@ -68,7 +68,7 @@ namespace LeThiHoa.Controllers
         // POST: Customer/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("CustomerID,CustomerName")] Customer std)
+        public async Task<IActionResult> Edit(string id, [Bind("CustomerID,CustomerName")] CustomerController std)
         {
             if (id != std.CustomerID)
             {

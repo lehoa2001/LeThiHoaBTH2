@@ -1,4 +1,4 @@
-using System.Data;
+sing System.Data;
 using OfficeOpenXml;
 namespace LeThiHoaBTH2.Models.Process
 {
@@ -6,48 +6,54 @@ namespace LeThiHoaBTH2.Models.Process
     {
         public DataTable ExcelToDataTable(string strPath)
         {
-            FileInfo fi = new FileInfo(strPath);
-            ExcelPackage excelPackage = new ExcelPackage(fi);
-            DataTable dt = new DataTable();
-            ExcelWorksheet = excelPackage.Workbook.Worksheets[0];
-            //check if the worksheet is completely empty
-            if (worksheet.Dimension == null)
+            FileInfo fi =new FileInfo(strPath);
+            ExcelPackage excelPackage =new ExcelPackage(fi);
+            DataTable dt =new DataTable();
+            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets[0];
+            if(worksheet.Dimension==null)
             {
                 return dt;
             }
-            //create a list to hold the column names
-            List<string> columnName = new List<string>();
-            //needed to keep track of empty colum headers
-            int currenColumn = 1;
-            //loop all colums in the sheet and add them to the datatable
-            foreach (var cell in worksheeet.Cells[1, 1, 1, worksheet.Dimension.End.Column])
+            List<string> columnNames =new List<string>();
+            int currentColumn=1;
+            foreach(var cell in worksheet.Cells [1, 1, 1, worksheet.Dimension.End.Column])
             {
-                string columnName = cell.Text.Trim();
-                //check if the previous header was empty and add it if was
-                if (cell.Start.colum != currentColumn);
+                string columnName =cell.Text.Trim();
+                if (cell.Starts.Column != currentColumn)
                 {
-                    columnName.Add("Header_" + currentColumn);
-                    dt.Columns.Add("Header_" + currentColumn);
-                    currentColumn++;
+                    columnNames.Add ("Header_" + currentColumn);
+                    dt.Columns.Add ("Header_" + currentColumn);
+                    currentColumn ++;
                 }
-                //add the column name to the list count the duplicates
-                columnNames.Add(columnName);
-                //count the duplicate column names and make the unique to avoid the exception
-                //A column named 'Name' already belongs to this DataTable
-                int occurrences = columnName.Count(x => x.Equals(columnName));
-                if (occurrences > 1)
+                // thêm tên cột vào danh sách để đếm các bản sao 
+                    columnNames.Add (columnName);
+                // đếm các tên cột trùng lặp và đặt chúng thành duy nhất để tránh tồn tại 
+                // Một cột có tên 'Tên' đã thuộc về DataTable này 
+                int occurrences = columnNames.Count (x => x. Equals (columnName));  
+                if  (occurrences > 1) 
                 {
-                    columnName = columnName + "_" + occurrences;
-                }
-                //add  the column to the datatable
-                dt.Columns.Add(columnName);
-                currentColumn++
+                    columnName = columnName + "" + occurrences;  
+                    }
+                // thêm cột vào datatable 
+                dt.Columns.Add (columnName);  
+                currentColumn ++;
             }
-
-            //start adding the contents of the excel file to the datatable
-            for (int i = 2; i <= worksheet.Dimension.End.R)
-
-            
+                // bắt đầu thêm nội dung của tệp excel vào dữ liệu cho 
+                for (int i = 2; i <= worksheet. Dimension. End.Row; i ++)
+                    {
+                        var row = worksheet.Cells [i, 1, i, worksheet.Dimension.End.Column];
+                        DataRow newRow = dt.NewRow ();  
+                        // lặp tất cả các ô trong hàng 
+                        foreach (var cell in row) 
+                        {
+                            newRow [cell.  Starts.Column -1] = cell.Text;
+                        }
+                        
+                    dt.Rows.Add(newRow);
+                    } 
+            return dt;
+            }
         }
+
     }
-}
+

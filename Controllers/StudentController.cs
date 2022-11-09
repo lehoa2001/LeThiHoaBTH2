@@ -1,92 +1,116 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using LeThiHoaBTH2.Data;
 using LeThiHoaBTH2.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace LeThiHoaBTH2.Controllers
 {
-    
     public class StudentController : Controller
     {
-        //khai bao Dbcontext de lam viec voi database
         private readonly ApplicationDbContext _context;
-        public StudentController (ApplicationDbContext context)
+
+        public StudentController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        //Action tra ve view hien thi danh sach sinh vien
+        // GET: Student
         public async Task<IActionResult> Index()
         {
-            var model = await _context.Students.ToListAsync();
-            return View(model);
+              return _context.Students != null ? 
+                          View(await _context.Students.ToListAsync()) :
+                          Problem("Entity set 'ApplicationDbContext.Students'  is null.");
         }
 
-        //Action trả về view thêm mới danh sách sinh viên
+        // GET: Student/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null || _context.Students == null)
+            {
+                return NotFound();
+            }
+            //tìm dữ liệu trong database theo id
+            var student = await _context.Students
+                .FirstOrDefaultAsync(m => m.StudentID == id);
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            return View(student);
+        }
+
+        // GET: Student/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        //Action xử lý dữ liệu sinh viên gửi lên từ view và lưu vào database
-        [HttpPost]
-        public async Task<IActionResult> Create(Student std)
+        // POST: Student/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,FullName,Age,Sđt")] Student student)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                _context.Add(std);
+                //add vào data
+                _context.Add(student);
+                //lưu thay đổi vào db
                 await _context.SaveChangesAsync();
+                //sau khi lưu thau đổi, điều hương về trang index
                 return RedirectToAction(nameof(Index));
             }
-            return View();
+            return View(student);
         }
 
-        //kiem tra ma sinh vien co ton tai khong
-        private bool StudentExists (string id)
-        {
-            return _context.Students.Any(e => e.StudentID == id);
-        }
-        
-        //Tạo phương thức Edit kiểm tra xem “id” của sinh viên có tồn tại trong cơ sở dữ liệu không? Nếu có thì trả về view “Edit” cho phép người dùng chỉnh sửa thông tin của Sinh viên đó.​
         // GET: Student/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Students == null)
             {
-                return View("NotFound");
+                return NotFound();
             }
 
             var student = await _context.Students.FindAsync(id);
             if (student == null)
             {
-                return View("NotFound");
+                return NotFound();
             }
             return View(student);
         }
 
-        //Tạo phương thức Edit cập nhật thông tin của sinh viên theo mã sinh viên.
         // POST: Student/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("StudentID,StudentName")] Student std)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FullName,Age,Sđt")] Student student)
         {
-            if (id != std.StudentID)
+            if (id != student.StudentID)
             {
-                return View("NotFound");
+                //return NotFound()
+                return NotFound();
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(std);
+                    //update dữ liệu thay đổi vào applicationDb
+                    _context.Update(student);
+                    //lư thay đổi
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StudentExists(std.StudentID))
+                    if (!StudentExists(student.StudentID))
                     {
-                        return View("NotFound");
+                        return NotFound();
                     }
                     else
                     {
@@ -95,36 +119,49 @@ namespace LeThiHoaBTH2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(std);
+            return View(student);
         }
 
-        //Tạo phương thức Delete kiểm tra xem “id” của sinh viên có tồn tại trong cơ sở dữ liệu không? Nếu có thì trả về view “Delete” cho phép người dùng xoá thông tin của Sinh viên đó.
-        public async Task<IActionResult> Delete(string id)
+        // GET: Student/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
-            if(id == null)
+            if (id == null || _context.Students == null)
             {
-                return View("NotFound");
+                return NotFound();
             }
 
-            var std = await _context.Students.FirstOrDefaultAsync(m => m.StudentID == id);
-            if (std == null)
+            var student = await _context.Students
+                .FirstOrDefaultAsync(m => m.StudentID == id);
+            if (student == null)
             {
-                return View("NotFound");
+                return NotFound();
             }
 
-            return View(std);
+            return View(student);
         }
 
-        //Tạo phương thức Delete xoá thông tin của sinh viên theo mã sinh viên.
-        //POST: Product/Delete/5
+        // POST: Student/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var std = await _context.Students.FindAsync(id);
-            _context.Students.Remove(std);
+            if (_context.Students == null)
+            {
+                return Problem("Entity set 'ApplicationDbContext.Students'  is null.");
+            }
+            var student = await _context.Students.FindAsync(id);
+            if (student != null)
+            {
+                _context.Students.Remove(student);
+            }
+            
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        private bool StudentExists(int id)
+        {
+          return (_context.Students?.Any(e => e.StudentID == id)).GetValueOrDefault();
         }
     }
 }

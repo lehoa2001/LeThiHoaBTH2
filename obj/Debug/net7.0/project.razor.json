@@ -16493,6 +16493,11 @@
       "FileKind": "mvc"
     },
     {
+      "FilePath": "c:\\Users\\Lenovo\\NetCore\\LeThiHoaBTH2\\Views\\Employee\\Detai.cshtml",
+      "TargetPath": "Views\\Employee\\Detai.cshtml",
+      "FileKind": "mvc"
+    },
+    {
       "FilePath": "c:\\Users\\Lenovo\\NetCore\\LeThiHoaBTH2\\Views\\Home\\Privacy.cshtml",
       "TargetPath": "Views\\Home\\Privacy.cshtml",
       "FileKind": "mvc"
